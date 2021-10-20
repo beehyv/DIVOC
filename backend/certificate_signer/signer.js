@@ -20,7 +20,7 @@ const {documentLoaders} = require('jsonld');
 const {node: documentLoader} = documentLoaders;
 const {contexts} = require('security-context');
 const credentialsv1 = require('./credentials.json');
-const {vaccinationContext} = require("vaccination-context");
+const {vaccinationContext} = require('./vaccination-context');
 const redis = require('./redis');
 
 const UNSUCCESSFUL = "UNSUCCESSFUL";
@@ -116,6 +116,7 @@ function transformW3(cert, certificateId) {
       name: R.pathOr('', ['recipient', 'name'], cert),
       gender: R.pathOr('', ['recipient', 'gender'], cert),
       age: ageOfRecipient(cert.recipient), //from dob
+      dob: R.pathOr('', ['recipient', 'dob'], cert),
       nationality: R.pathOr('', ['recipient', 'nationality'], cert),
       address: {
         "streetAddress": R.pathOr('', ['recipient', 'address', 'addressLine1'], cert),

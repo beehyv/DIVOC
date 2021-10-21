@@ -1,6 +1,6 @@
 const {CERTIFICATE_CONTROLLER_ID,
   CERTIFICATE_DID,
-  CERTIFICATE_NAMESPACE,
+  CERTIFICATE_NAMESPACE_V2,
   CERTIFICATE_ISSUER,
   CERTIFICATE_BASE_URL,
   CERTIFICATE_FEEDBACK_BASE_URL,
@@ -20,7 +20,7 @@ const {documentLoaders} = require('jsonld');
 const {node: documentLoader} = documentLoaders;
 const {contexts} = require('security-context');
 const credentialsv1 = require('./credentials.json');
-const {vaccinationContext} = require('./vaccination-context');
+const {vaccinationContextV2} = require('vaccination-context');
 const redis = require('./redis');
 
 const UNSUCCESSFUL = "UNSUCCESSFUL";
@@ -40,7 +40,7 @@ documentLoaderMapping[CERTIFICATE_DID] = publicKey;
 documentLoaderMapping[CERTIFICATE_PUBKEY_ID] = publicKey;
 documentLoaderMapping['https://www.w3.org/2018/credentials#'] = credentialsv1;
 documentLoaderMapping["https://www.w3.org/2018/credentials/v1"] = credentialsv1;
-documentLoaderMapping[CERTIFICATE_NAMESPACE] = vaccinationContext;
+documentLoaderMapping[CERTIFICATE_NAMESPACE_V2] = vaccinationContextV2;
 
 const customLoader = url => {
   console.log("checking " + url);
@@ -106,7 +106,7 @@ function transformW3(cert, certificateId) {
   const certificateFromTemplate = {
     "@context": [
       "https://www.w3.org/2018/credentials/v1",
-      CERTIFICATE_NAMESPACE,
+      CERTIFICATE_NAMESPACE_V2,
     ],
     type: ['VerifiableCredential', 'ProofOfVaccinationCredential'],
     credentialSubject: {

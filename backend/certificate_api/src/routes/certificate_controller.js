@@ -130,7 +130,6 @@ async function createCertificatePDF(certificateResp, res, source) {
         const certificateData = {
             name: credentialSubject.name,
             age: credentialSubject.age,
-            dob: credentialSubject.dob,
             gender: credentialSubject.gender,
             identity: formatId(credentialSubject.id),
             beneficiaryId: credentialSubject.refId,

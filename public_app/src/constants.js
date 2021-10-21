@@ -58,6 +58,10 @@ export const CertificateDetailsPaths = {
     path: ["credentialSubject", "age"],
     format: (data) => (data)
   },
+  "DOB": {
+    path: ["credentialSubject", "dob"],
+    format: (data) => (data)
+  },
   "Gender": {
     path: ["credentialSubject", "gender"],
     format: (data) => (data)

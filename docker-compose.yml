@@ -62,7 +62,7 @@ services:
       timeout: 10s
       retries: 5
     ports:
-      - "8080:8080"
+      - "8088:8080"
       - "9990:9990"
     depends_on:
       db:
@@ -120,12 +120,12 @@ services:
       KEYCLOAK_URL: "http://keycloak:8080/auth"
       DB_HOST: db
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      test: ["CMD", "curl", "-f", "http://localhost:8010"]
       interval: 10s
       timeout: 10s
       retries: 10
     ports:
-      - "8000:8000"
+      - "8010:8000"
     depends_on:
       kafka:
         condition: service_healthy
@@ -140,7 +140,7 @@ services:
       REGISTRY_WITH_ES_URL: "http://registry-es:8081"
       KEYCLOAK_URL: "http://keycloak:8080/auth"
       CLICK_HOUSE_URL: tcp://clickhouse-server:9000?debug=true
-      ADMIN_API_CLIENT_SECRET: 20dc0bc2-1aa4-4ca3-9808-aabfc50b1d6c
+      ADMIN_API_CLIENT_SECRET: 33a64629-994a-40c8-b1e4-8a36d26e3013
       DB_HOST: db
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
@@ -219,7 +219,7 @@ services:
       REGISTRY_URL: "http://registry:8081"
       REGISTRY_WITH_ES_URL: "http://registry-es:8081"
       KEYCLOAK_URL: "http://keycloak:8080/auth"
-      ADMIN_API_CLIENT_SECRET: 20dc0bc2-1aa4-4ca3-9808-aabfc50b1d6c
+      ADMIN_API_CLIENT_SECRET: 33a64629-994a-40c8-b1e4-8a36d26e3013
     depends_on:
       registry:
         condition: service_started
@@ -245,7 +245,7 @@ services:
   nginx:
     image: dockerhub/nginx
     ports:
-      - "80:80"
+      - "8009:80"
     depends_on:
       vaccination_api:
         condition: service_started

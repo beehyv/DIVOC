@@ -78,6 +78,7 @@ export const CertificateStatus = ({certificateData, goBack}) => {
         async function verifyData() {
             try {
                 const signedJSON = JSON.parse(certificateData);
+                debugger
                 const publicKey = {
                     '@context': jsigs.SECURITY_CONTEXT_URL,
                     id: 'did:india',

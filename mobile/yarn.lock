@@ -11771,7 +11771,7 @@ v8-to-istanbul@^6.0.1:
     convert-source-map "^1.6.0"
     source-map "^0.7.3"
 
-vaccination-context@^1.0.9:
+vaccination-context@^1.0.7:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/vaccination-context/-/vaccination-context-1.1.0.tgz#d0250a7b69fd7ab4379a5d71215505b9bd811d8d"
   integrity sha512-ZNsG8Kgg6kNbyMWsSk5dVXVeKfKty6gs8uELxzbJa2XeCZorsBzy7a/KVxU25Er3YbDAaC+sC9igBMosovDRhQ==

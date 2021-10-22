@@ -62,7 +62,7 @@ services:
       timeout: 10s
       retries: 5
     ports:
-      - "8088:8080"
+      - "8080:8080"
       - "9990:9990"
     depends_on:
       db:
@@ -120,12 +120,12 @@ services:
       KEYCLOAK_URL: "http://keycloak:8080/auth"
       DB_HOST: db
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8010"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
       interval: 10s
       timeout: 10s
       retries: 10
     ports:
-      - "8010:8000"
+      - "8000:8000"
     depends_on:
       kafka:
         condition: service_healthy
@@ -245,7 +245,7 @@ services:
   nginx:
     image: dockerhub/nginx
     ports:
-      - "8009:80"
+      - "80:80"
     depends_on:
       vaccination_api:
         condition: service_started

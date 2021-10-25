@@ -2,6 +2,7 @@ FROM node:lts-alpine
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 ENV CERTIFICATE_NAMESPACE "https://cowin.gov.in/credentials/vaccination/v1"
+ENV CERTIFICATE_NAMESPACE_V2 "https://cowin.gov.in/credentials/vaccination/v2"
 ENV CERTIFICATE_CONTROLLER_ID "https://cowin.gov.in/"
 ENV CERTIFICATE_PUBKEY_ID "https://example.com/i/india"
 ENV CERTIFICATE_DID "did:india"

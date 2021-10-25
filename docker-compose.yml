@@ -140,7 +140,7 @@ services:
       REGISTRY_WITH_ES_URL: "http://registry-es:8081"
       KEYCLOAK_URL: "http://keycloak:8080/auth"
       CLICK_HOUSE_URL: tcp://clickhouse-server:9000?debug=true
-      ADMIN_API_CLIENT_SECRET: 20dc0bc2-1aa4-4ca3-9808-aabfc50b1d6c
+      ADMIN_API_CLIENT_SECRET: 33a64629-994a-40c8-b1e4-8a36d26e3013
       DB_HOST: db
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
@@ -219,7 +219,7 @@ services:
       REGISTRY_URL: "http://registry:8081"
       REGISTRY_WITH_ES_URL: "http://registry-es:8081"
       KEYCLOAK_URL: "http://keycloak:8080/auth"
-      ADMIN_API_CLIENT_SECRET: 20dc0bc2-1aa4-4ca3-9808-aabfc50b1d6c
+      ADMIN_API_CLIENT_SECRET: 33a64629-994a-40c8-b1e4-8a36d26e3013
     depends_on:
       registry:
         condition: service_started
@@ -231,6 +231,7 @@ services:
       REGISTRY_WITH_ES_URL: "http://registry-es:8081"
       REDIS_URL: redis://redis:6379
       CERTIFICATE_NAMESPACE: "https://cowin.gov.in/credentials/vaccination/v1"
+      CERTIFICATE_NAMESPACE_V2: "https://cowin.gov.in/credentials/vaccination/v2"
       CERTIFICATE_CONTROLLER_ID: "https://cowin.gov.in/"
       CERTIFICATE_PUBKEY_ID: "https://example.com/i/india"
       CERTIFICATE_DID: "did:india"

@@ -1,4 +1,5 @@
 const CERTIFICATE_NAMESPACE = process.env.CERTIFICATE_NAMESPACE || "https://divoc.dev/credentials/vaccination/v1";
+const CERTIFICATE_NAMESPACE_V2 = process.env.CERTIFICATE_NAMESPACE_V2 || "https://divoc.dev/credentials/vaccination/v2";
 const CERTIFICATE_CONTROLLER_ID = process.env.CERTIFICATE_CONTROLLER_ID || 'https://divoc.dev/';
 const CERTIFICATE_PUBKEY_ID = process.env.CERTIFICATE_PUBKEY_ID || 'https://example.com/i/india';
 const CERTIFICATE_DID = process.env.CERTIFICATE_DID || 'did:india';
@@ -23,6 +24,7 @@ const REDIS_KEY_EXPIRE = process.env.REDIS_KEY_EXPIRE || 2 * 24 * 60 * 60; // in
 
 module.exports = {
   CERTIFICATE_NAMESPACE,
+  CERTIFICATE_NAMESPACE_V2,
   CERTIFICATE_CONTROLLER_ID,
   CERTIFICATE_DID,
   CERTIFICATE_PUBKEY_ID,

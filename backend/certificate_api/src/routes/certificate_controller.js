@@ -95,6 +95,14 @@ function formatDate(givenDate) {
 
     return `${padDigit(day)}-${monthName}-${year}`;
 }
+function formatDateISO(givenDate) {
+    const dob = new Date(givenDate);
+    let day = dob.getDate();
+    let month = dob.getMonth()+1;
+    let year = dob.getFullYear();
+
+    return `${year}-${month}-${padDigit(day)}`;
+}
 
 function formatDateTime(givenDateTime) {
     const dob = new Date(givenDateTime);
@@ -166,6 +174,12 @@ async function createCertificateQRCode(certificateResp, res, source) {
 async function createCertificatePDF(certificateResp, res, source) {
     if (certificateResp.length > 0) {
         let certificateRaw = certificateService.getLatestCertificate(certificateResp);
+        let vaccinationDetails = getVaccineDetailsOfPreviousDoses(certificateResp);
+        
+        if(!certificateRaw.meta?.vaccinations?.length){
+           certificateRaw.meta.vaccinations=vaccinationDetails;
+        }
+        
         const dataURL = await getQRCodeData(certificateRaw.certificate, true);
         const certificateData = prepareDataForVaccineCertificateTemplate(certificateRaw, dataURL);
         const pdfBuffer = await createPDF(vaccineCertificateTemplateFilePath, certificateData);
@@ -528,29 +542,83 @@ async function createPDF(templateFile, data) {
 
     return pdfBuffer
 }
-
+function getVaccineDetails(certificateData, certificateRaw,) {
+    //let currentDose = certificateData.dose
+    if (certificateRaw.meta.vaccinations) {
+        for (let x in certificateRaw.meta.vaccinations) {
+            let details = certificateRaw.meta.vaccinations[x];
+            let i=details.dose;
+            certificateData["vaccine" + i + "Dose"] = details.dose || "";
+            certificateData["vaccine" + i + "Name"] = details.name || "";
+            certificateData["vaccine" + i + "Date"] = formatDateISO(details.date || "");
+            certificateData["vaccine" + i + "Manufacturer"] = details.manufacturer || "";
+            certificateData["vaccine" + i + "Batch"] = details.batch || "";
+            certificateData["vaccine" + i + "facilityName"] = concatenateReadableString(details.facilityName.name, details.facilityName.address.district) || "";
+            certificateData["vaccine" + i + "vaccinatedCountry"] =  details.facilityName.address.addressCountry || "";
+        }
+    }
+}
+function getVaccineDetailsOfPreviousDoses(certificates){
+    let evidence;
+    if (certificates.length > 0) {
+      let vaccineDetails;
+        certificates = certificates.sort(function (a, b) {
+        if (a.osUpdatedAt < b.osUpdatedAt) {
+          return 1;
+        }
+        if (a.osUpdatedAt > b.osUpdatedAt) {
+          return -1;
+        }
+        return 0;
+      }).reverse();
+      const vaccinationDetails =[];
+      
+      for(let i=0; i<certificates.length-1 ; i++){
+          const certificate_tmp = JSON.parse(certificates[i].certificate);
+          if(certificate_tmp.evidence[0].dose < JSON.parse(certificates[i+1].certificate).evidence[0].dose){
+          evidence = certificate_tmp.evidence[0];
+              vaccineDetails = {
+                  "dose": evidence.dose,
+                  "date": evidence.date,
+                  "name": evidence.vaccine,
+                  "manufacturer": evidence.manufacturer,
+                  "batch": evidence.batch,
+                  "facilityName": evidence.facility,
+                  "vaccinatedCountry": evidence.facility.address.addressCountry
+              };
+              vaccinationDetails.push(vaccineDetails);
+        }
+      }
+        evidence = JSON.parse(certificates[certificates.length - 1].certificate).evidence[0];
+        vaccineDetails = {
+            "dose": evidence.dose,
+            "date": evidence.date,
+            "name": evidence.vaccine,
+            "manufacturer": evidence.manufacturer,
+            "batch": evidence.batch,
+            "facilityName": evidence.facility,
+            "vaccinatedCountry": evidence.facility.address.addressCountry
+        };
+        vaccinationDetails.push(vaccineDetails);
+      return vaccinationDetails;
+    }
+  }
 function prepareDataForVaccineCertificateTemplate(certificateRaw, dataURL) {
     certificateRaw.certificate = JSON.parse(certificateRaw.certificate);
-    const {certificate: {credentialSubject, evidence}} = certificateRaw;
+    const {certificate: {credentialSubject,issuer,issuanceDate, evidence}} = certificateRaw;
     const certificateData = {
         name: credentialSubject.name,
-        age: credentialSubject.age,
+        dob: credentialSubject.dob,
         gender: credentialSubject.gender,
         identity: formatId(credentialSubject.id),
-        beneficiaryId: credentialSubject.refId,
-        recipientAddress: formatRecipientAddress(credentialSubject.address),
-        vaccine: evidence[0].vaccine,
-        vaccinationDate: formatDate(evidence[0].date) + ` (Batch no. ${evidence[0].batch} )`,
-        vaccineValidDays: `after ${getVaccineValidDays(evidence[0].effectiveStart, evidence[0].effectiveUntil)} days`,
+        certificateId: certificateRaw.certificateId,
+        issuer: issuer,
         vaccinatedBy: evidence[0].verifier.name,
-        vaccinatedAt: formatFacilityAddress(evidence[0]),
+        doi: formatDateISO(issuanceDate),
         qrCode: dataURL,
-        dose: evidence[0].dose,
-        totalDoses: evidence[0].totalDoses,
-        isFinalDose: evidence[0].dose === evidence[0].totalDoses,
-        currentDoseText: `(${getNumberWithOrdinal(evidence[0].dose)} Dose)`
+        vaccinationDetails: certificateRaw.meta.vaccinations
     };
-
+    getVaccineDetails(certificateData, certificateRaw,);
     return certificateData;
 }
 

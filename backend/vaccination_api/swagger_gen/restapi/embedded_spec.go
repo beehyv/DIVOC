@@ -1112,16 +1112,14 @@ func init() {
         "facility": {
           "type": "object",
           "required": [
-            "name"
+            "name",
+            "address"
           ],
           "properties": {
             "address": {
               "type": "object",
               "required": [
-                "addressLine1",
-                "district",
-                "state",
-                "pincode"
+                "country"
               ],
               "properties": {
                 "addressLine1": {
@@ -1168,9 +1166,7 @@ func init() {
           "type": "object",
           "required": [
             "name",
-            "nationality",
-            "identity",
-            "contact"
+            "dob"
           ],
           "properties": {
             "address": {
@@ -1243,10 +1239,9 @@ func init() {
           "type": "object",
           "required": [
             "name",
+            "batch",
             "manufacturer",
             "date",
-            "effectiveStart",
-            "effectiveUntil",
             "dose",
             "totalDoses"
           ],
@@ -2958,16 +2953,14 @@ func init() {
         "facility": {
           "type": "object",
           "required": [
-            "name"
+            "name",
+            "address"
           ],
           "properties": {
             "address": {
               "type": "object",
               "required": [
-                "addressLine1",
-                "district",
-                "state",
-                "pincode"
+                "country"
               ],
               "properties": {
                 "addressLine1": {
@@ -3014,9 +3007,7 @@ func init() {
           "type": "object",
           "required": [
             "name",
-            "nationality",
-            "identity",
-            "contact"
+            "dob"
           ],
           "properties": {
             "address": {
@@ -3089,10 +3080,9 @@ func init() {
           "type": "object",
           "required": [
             "name",
+            "batch",
             "manufacturer",
             "date",
-            "effectiveStart",
-            "effectiveUntil",
             "dose",
             "totalDoses"
           ],
@@ -3149,16 +3139,14 @@ func init() {
     "CertificationRequestV2Facility": {
       "type": "object",
       "required": [
-        "name"
+        "name",
+        "address"
       ],
       "properties": {
         "address": {
           "type": "object",
           "required": [
-            "addressLine1",
-            "district",
-            "state",
-            "pincode"
+            "country"
           ],
           "properties": {
             "addressLine1": {
@@ -3194,10 +3182,7 @@ func init() {
     "CertificationRequestV2FacilityAddress": {
       "type": "object",
       "required": [
-        "addressLine1",
-        "district",
-        "state",
-        "pincode"
+        "country"
       ],
       "properties": {
         "addressLine1": {
@@ -3228,9 +3213,7 @@ func init() {
       "type": "object",
       "required": [
         "name",
-        "nationality",
-        "identity",
-        "contact"
+        "dob"
       ],
       "properties": {
         "address": {
@@ -3335,10 +3318,9 @@ func init() {
       "type": "object",
       "required": [
         "name",
+        "batch",
         "manufacturer",
         "date",
-        "effectiveStart",
-        "effectiveUntil",
         "dose",
         "totalDoses"
       ],

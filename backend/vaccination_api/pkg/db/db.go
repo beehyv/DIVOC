@@ -51,14 +51,7 @@ type CertifyUploadFields struct {
 	RecipientMobileNumber     string `json:"recipientMobileNumber"`
 	RecipientDOB              string `json:"recipientDOB"`
 	RecipientGender           string `json:"recipientGender"`
-	RecipientNationality      string `json:"recipientNationality"`
 	RecipientIdentity         string `json:"recipientIdentity"`
-	RecipientAge              string `json:"recipientAge"`
-	RecipientAddressLine1     string `json:"recipientAddressLine1"`
-	RecipientAddressLine2     string `json:"recipientAddressLine2"`
-	RecipientDistrict         string `json:"recipientDistrict"`
-	RecipientState            string `json:"recipientState"`
-	RecipientPincode          string  `json:"recipientPincode"`
 	VaccinationBatch          string `json:"vaccinationBatch"`
 	VaccinationDate           string `json:"vaccinationDate"`
 	VaccinationDose           string `json:"vaccinationDose"`
@@ -69,11 +62,7 @@ type CertifyUploadFields struct {
 	VaccinationName           string `json:"vaccinationName"`
 	VaccinatorName            string `json:"vaccinatorName"`
 	FacilityName              string `json:"facilityName"`
-	FacilityAddressLine1      string `json:"facilityAddressLine1"`
-	FacilityAddressLine2      string `json:"facilityAddressLine2"`
-	FacilityDistrict          string `json:"facilityDistrict"`
-	FacilityState             string `json:"facilityState"`
-	FacilityPincode           string  `json:"facilityPincode"`
+	FacilityCountry           string `json:"facilityCountry"`
 }
 
 func Init() {

@@ -13,17 +13,6 @@
         "refId": "{{preEnrollmentCode}}",
         "name": "{{recipientName}}",
         "gender": "{{recipientGender}}",
-        "age": "{{recipientAge}}",
-        "nationality": "{{recipientNationality}}",
-        "address": {
-            "streetAddress": "{{recipientAddressLine1}}",
-            "streetAddress2": "{{recipientAddressLine2}}",
-            "district": "{{recipientAddressDistrict}}",
-            "city": "{{recipientAddressCity}}",
-            "addressRegion": "{{recipientAddressRegion}}",
-            "addressCountry": "{{recipientAddressCountry}}",
-            "postalCode": "{{recipientAddressPostalCode}}"
-        },
         "dob": "{{recipientDob}}"
     },
     "issuer": "{{{issuer}}}",
@@ -31,8 +20,6 @@
     "evidence": [
         {
             "id": "{{{evidenceId}}}",
-            "infoUrl": "{{{InfoUrl}}}",
-            "feedbackUrl": "{{{feedbackUrl}}}",
             "certificateId": "{{certificateId}}",
             "type": [
                 "Vaccination"
@@ -53,13 +40,7 @@
             "facility": {
                 "name": "{{facilityName}}",
                 "address": {
-                    "streetAddress": "{{facilityAddressLine1}}",
-                    "streetAddress2": "{{facilityAddressLine2}}",
-                    "district": "{{facilityAddressDistrict}}",
-                    "city": "{{facilityAddressCity}}",
-                    "addressRegion": "{{facilityAddressRegion}}",
-                    "addressCountry": "{{facilityAddressCountry}}",
-                    "postalCode": "{{facilityAddressPostalCode}}"
+                    "addressCountry": "{{facilityAddressCountry}}"
                 }
             }
         }

@@ -62,27 +62,12 @@ func createCertificate(data *Scanner, uploadDetails *db.CertifyUploads) error {
 		}
 	}
 
-	recipientAge := certifyData.RecipientAge
-	if recipientAge == "" {
-		recipientAge = calcAge(strfmt.Date(dob))
-		log.Info("calculated Age : ", recipientAge)
-	}
-
-	recipient := &models.CertificationRequestRecipient{
-		Name: &certifyData.RecipientName,
-		Age:  recipientAge,
-		Address: &models.CertificationRequestRecipientAddress{
-			AddressLine1: &certifyData.RecipientAddressLine1,
-			AddressLine2: certifyData.RecipientAddressLine2,
-			District:     &certifyData.RecipientDistrict,
-			Pincode:      &certifyData.RecipientPincode,
-			State:        &certifyData.RecipientState,
-		},
-		Contact:     contact,
-		Dob:         dateAdr(strfmt.Date(dob)),
-		Gender:      &certifyData.RecipientGender,
-		Nationality: &certifyData.RecipientNationality,
-		Identity:    &certifyData.RecipientIdentity,
+	recipient := &models.CertificationRequestV2Recipient{
+		Name:     &certifyData.RecipientName,
+		Contact:  contact,
+		Dob:      dateAdr(strfmt.Date(dob)),
+		Gender:   certifyData.RecipientGender,
+		Identity: certifyData.RecipientIdentity,
 	}
 
 	vaccinationDate, terr := time.Parse(time.RFC3339, certifyData.VaccinationDate)
@@ -105,39 +90,35 @@ func createCertificate(data *Scanner, uploadDetails *db.CertifyUploads) error {
 	if terr != nil {
 		log.Info("error while parsing totalDoses ", certifyData.VaccinationTotalDoses)
 	}
-	vaccination := &models.CertificationRequestVaccination{
-		Batch:          certifyData.VaccinationBatch,
+	vaccination := &models.CertificationRequestV2Vaccination{
+		Batch:          &certifyData.VaccinationBatch,
 		Date:           dateTimeAdr(strfmt.DateTime(vaccinationDate)),
-		EffectiveStart: dateAdr(strfmt.Date(effectiveStart)),
-		EffectiveUntil: dateAdr(strfmt.Date(effectiveUntil)),
+		EffectiveStart: *dateAdr(strfmt.Date(effectiveStart)),
+		EffectiveUntil: *dateAdr(strfmt.Date(effectiveUntil)),
 		Manufacturer:   &certifyData.VaccinationManufacturer,
 		Name:           &certifyData.VaccinationName,
 		Dose:           &dose,
 		TotalDoses:     &totalDoses,
 	}
 
-	vaccinator := &models.CertificationRequestVaccinator{
+	vaccinator := &models.CertificationRequestV2Vaccinator{
 		Name: &certifyData.VaccinatorName,
 	}
 
-	facility := &models.CertificationRequestFacility{
+	facility := &models.CertificationRequestV2Facility{
 		Name: &certifyData.FacilityName,
-		Address: &models.CertificationRequestFacilityAddress{
-			AddressLine1: &certifyData.FacilityAddressLine1,
-			AddressLine2: certifyData.FacilityAddressLine2,
-			District:     &certifyData.FacilityDistrict,
-			State:        &certifyData.FacilityState,
-			Pincode:      &certifyData.FacilityPincode,
+		Address: &models.CertificationRequestV2FacilityAddress{
+			Country: &certifyData.FacilityCountry,
 		},
 	}
 
-	certificate := models.CertificationRequest{
+	certificate := models.CertificationRequestV2{
 		PreEnrollmentCode: &certifyData.PreEnrollmentCode,
-		Facility:    facility,
-		Recipient:   recipient,
-		Vaccination: vaccination,
-		Vaccinator:  vaccinator,
-		Meta:        map[string]interface{}{"certificateType": CERTIFICATE_TYPE_V2},
+		Facility:          facility,
+		Recipient:         recipient,
+		Vaccination:       vaccination,
+		Vaccinator:        vaccinator,
+		Meta:              map[string]interface{}{"certificateType": CERTIFICATE_TYPE_V3},
 	}
 	if jsonRequestString, err := json.Marshal(certificate); err == nil {
 		log.Infof("Certificate request %+v", string(jsonRequestString))
@@ -155,7 +136,7 @@ func validateBulkCertifyCSVRowData(data *Scanner) error {
 	return validateBulkCertifyCSV(
 		"Fields",
 		requiredFields,
-		func(field string) bool { return data.Text(field) == ""},
+		func(field string) bool { return data.Text(field) == "" },
 	)
 }
 
@@ -166,14 +147,7 @@ func convertToCertifyUploadFields(data *Scanner) *db.CertifyUploadFields {
 		RecipientMobileNumber:     data.Text("recipientMobileNumber"),
 		RecipientDOB:              data.Text("recipientDOB"),
 		RecipientGender:           data.Text("recipientGender"),
-		RecipientNationality:      data.Text("recipientNationality"),
 		RecipientIdentity:         data.Text("recipientIdentity"),
-		RecipientAge:              data.Text("recipientAge"),
-		RecipientAddressLine1:     data.Text("recipientAddressLine1"),
-		RecipientAddressLine2:     data.Text("recipientAddressLine2"),
-		RecipientDistrict:         data.Text("recipientDistrict"),
-		RecipientState:            data.Text("recipientState"),
-		RecipientPincode:          data.Text("recipientPincode"),
 		VaccinationBatch:          data.Text("vaccinationBatch"),
 		VaccinationDate:           data.Text("vaccinationDate"),
 		VaccinationDose:           data.Text("vaccinationDose"),
@@ -184,11 +158,7 @@ func convertToCertifyUploadFields(data *Scanner) *db.CertifyUploadFields {
 		VaccinationName:           data.Text("vaccinationName"),
 		VaccinatorName:            data.Text("vaccinatorName"),
 		FacilityName:              data.Text("facilityName"),
-		FacilityAddressLine1:      data.Text("facilityAddressLine1"),
-		FacilityAddressLine2:      data.Text("facilityAddressLine2"),
-		FacilityDistrict:          data.Text("facilityDistrict"),
-		FacilityState:             data.Text("facilityState"),
-		FacilityPincode:           data.Text("facilityPincode"),
+		FacilityCountry:           data.Text("facilityCountry"),
 	}
 }
 
@@ -197,7 +167,7 @@ func validateBulkCertifyCSVHeaders(headers []string) error {
 	return validateBulkCertifyCSV(
 		"Headers",
 		requiredHeaders,
-		func(field string) bool { return !contains(headers, field)},
+		func(field string) bool { return !contains(headers, field) },
 	)
 }
 

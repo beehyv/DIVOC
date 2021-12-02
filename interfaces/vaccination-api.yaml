@@ -786,9 +786,7 @@ definitions:
               - pincode
         required:
           - name
-          - nationality
-          - identity
-          - contact
+          - dob
       vaccination:
         type: object
         properties:
@@ -821,10 +819,9 @@ definitions:
               2
         required:
           - name
+          - batch
           - manufacturer
           - date
-          - effectiveStart
-          - effectiveUntil
           - dose
           - totalDoses
       vaccinator:
@@ -861,12 +858,10 @@ definitions:
                 type: string
                 minLength: 1
             required:
-              - addressLine1
-              - district
-              - state
-              - pincode
+              - country
         required:
           - name
+          - address
       meta:
         type: object
     required:

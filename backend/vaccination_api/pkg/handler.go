@@ -610,7 +610,7 @@ func updateCertificateV3(params certification.UpdateCertificateV3Params, princip
 	// sign verification can be disabled and use vaccination certification generation
 	log.Debugf("%+v\n", params.Body[0])
 	for _, request := range params.Body {
-		if certificateId := getCertificateIdToBeUpdated(request); certificateId != nil {
+		if certificateId := getCertificateIdToBeUpdatedV2(request); certificateId != nil {
 			log.Infof("Certificate update request approved %+v", request)
 			if request.Meta == nil {
 				request.Meta = map[string]interface{}{
@@ -635,6 +635,42 @@ func updateCertificateV3(params certification.UpdateCertificateV3Params, princip
 
 func getCertificateIdToBeUpdated(request *models.CertificationRequest) *string {
 
+	filter := map[string]interface{}{
+		"preEnrollmentCode": map[string]interface{}{
+			"eq": request.PreEnrollmentCode,
+		},
+	}
+	certificateFromRegistry, err := services.QueryRegistry(CertificateEntity, filter, config.Config.SearchRegistry.DefaultLimit, config.Config.SearchRegistry.DefaultOffset)
+	certificates := certificateFromRegistry[CertificateEntity].([]interface{})
+	if err == nil && len(certificates) > 0 {
+		log.Infof("Certificates: %+v", certificates)
+		if len(certificates) > 1 {
+			certificates = SortCertificatesByCreateAt(certificates)
+		}
+		doseWiseCertificateIds := getDoseWiseCertificateIds(certificates)
+		// no changes to provisional certificate if final certificate is generated
+		if *request.Vaccination.Dose < *request.Vaccination.TotalDoses && len(doseWiseCertificateIds) > 1 {
+			log.Error("Updating provisional certificate restricted")
+			return nil
+		}
+		// check if certificate exists for a dose
+		if certificateIds, ok := doseWiseCertificateIds[int(*request.Vaccination.Dose)]; ok && len(certificateIds) > 0 {
+			// check if maximum time of correction is reached
+			count := len(certificateIds)
+			if count < (config.Config.Certificate.UpdateLimit + 1) {
+				certificateId := doseWiseCertificateIds[int(*request.Vaccination.Dose)][count-1]
+				return &certificateId
+			} else {
+				log.Error("Certificate update limit reached")
+			}
+		} else {
+			log.Error("No certificate found to update")
+		}
+	}
+	return nil
+}
+
+func getCertificateIdToBeUpdatedV2(request *models.CertificationRequestV2) *string {
 	filter := map[string]interface{}{
 		"preEnrollmentCode": map[string]interface{}{
 			"eq": request.PreEnrollmentCode,

@@ -142,16 +142,7 @@ function transformW3(cert, certificateId) {
   const preEnrollmentCode = R.pathOr('', ['preEnrollmentCode'], cert);
   const recipientName = R.pathOr('', ['recipient', 'name'], cert);
   const recipientGender = R.pathOr('', ['recipient', 'gender'], cert);
-  const recipientNationality = R.pathOr('', ['recipient', 'nationality'], cert);
-  const recipientAge = ageOfRecipient(cert.recipient); //from dob
   const recipientDob = dobOfRecipient(cert.recipient);
-  const recipientAddressLine1 = R.pathOr('', ['recipient', 'address', 'addressLine1'], cert);
-  const recipientAddressLine2 = R.pathOr('', ['recipient', 'address', 'addressLine2'], cert);
-  const recipientAddressDistrict = R.pathOr('', ['recipient', 'address', 'district'], cert);
-  const recipientAddressCity = R.pathOr('', ['recipient', 'address', 'city'], cert);
-  const recipientAddressRegion = R.pathOr('', ['recipient', 'address', 'state'], cert);
-  const recipientAddressCountry = R.pathOr('', ['recipient', 'address', 'country'], cert);
-  const recipientAddressPostalCode = R.pathOr('', ['recipient', 'address', 'pincode'], cert);
 
   const issuer = CERTIFICATE_ISSUER;
   const issuanceDate = new Date().toISOString();
@@ -172,21 +163,14 @@ function transformW3(cert, certificateId) {
   const totalDoses = R.pathOr('', ['vaccination', 'totalDoses'], cert);
   const verifierName = R.pathOr('', ['vaccinator', 'name'], cert);
   const facilityName = R.pathOr('', ['facility', 'name'], cert);
-  const facilityAddressLine1 = R.pathOr('', ['facility', 'address', 'addressLine1'], cert);
-  const facilityAddressLine2 = R.pathOr('', ['facility', 'address', 'addressLine2'], cert);
-  const facilityAddressDistrict = R.pathOr('', ['facility', 'address', 'district'], cert);
-  const facilityAddressCity = R.pathOr('', ['facility', 'address', 'city'], cert);
-  const facilityAddressRegion = R.pathOr('', ['facility', 'address', 'state'], cert);
   const facilityAddressCountry = R.pathOr(config.FACILITY_COUNTRY_CODE, ['facility', 'address', 'country'], cert);
-  const facilityAddressPostalCode = R.pathOr('', ['facility', 'address', 'pincode'], cert);
 
   let data = {
-    namespace, recipientIdentifier, preEnrollmentCode, recipientName, recipientGender, recipientDob, recipientAge, recipientNationality,
-    recipientAddressLine1, recipientAddressLine2, recipientAddressDistrict, recipientAddressCity, recipientAddressRegion, recipientAddressCountry, recipientAddressPostalCode,
-    issuer, issuanceDate, evidenceId, InfoUrl, feedbackUrl,
+    namespace, recipientIdentifier, preEnrollmentCode, recipientName, recipientGender, recipientDob,
+    issuer, issuanceDate, evidenceId,
     certificateId, batch, vaccine, icd11Code,  prophylaxis, manufacturer, vaccinationDate, effectiveStart, effectiveUntil, dose, totalDoses,
     verifierName,
-    facilityName, facilityAddressLine1, facilityAddressLine2, facilityAddressDistrict, facilityAddressCity, facilityAddressRegion, facilityAddressCountry, facilityAddressPostalCode
+    facilityName, facilityAddressCountry
   };
 
   const template = certificateType === CERTIFICATE_TYPE_V3 ? fs.readFileSync(DDCC_TEMPLATE_FILEPATH, 'utf8') : fs.readFileSync(W3C_TEMPLATE_FILEPATH, 'utf8');

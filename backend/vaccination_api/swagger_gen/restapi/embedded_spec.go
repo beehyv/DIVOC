@@ -800,7 +800,7 @@ func init() {
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/CertificationRequest"
+                "$ref": "#/definitions/CertificationRequestV2"
               }
             }
           }
@@ -2451,7 +2451,7 @@ func init() {
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/CertificationRequest"
+                "$ref": "#/definitions/CertificationRequestV2"
               }
             }
           }

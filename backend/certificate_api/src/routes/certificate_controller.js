@@ -553,8 +553,8 @@ function getVaccineDetails(certificateData, certificateRaw,) {
             certificateData["vaccine" + i + "Date"] = formatDateISO(details.date || "");
             certificateData["vaccine" + i + "Manufacturer"] = details.manufacturer || "";
             certificateData["vaccine" + i + "Batch"] = details.batch || "";
-            certificateData["vaccine" + i + "facilityName"] = concatenateReadableString(details.facilityName.name, details.facilityName.address.district) || "";
-            certificateData["vaccine" + i + "vaccinatedCountry"] =  details.facilityName.address.addressCountry || "";
+            certificateData["vaccine" + i + "facilityName"] = details.facilityName || "";
+            certificateData["vaccine" + i + "vaccinatedCountry"] =  details.vaccinatedCountry || "";
         }
     }
 }
@@ -583,7 +583,7 @@ function getVaccineDetailsOfPreviousDoses(certificates){
                   "name": evidence.vaccine,
                   "manufacturer": evidence.manufacturer,
                   "batch": evidence.batch,
-                  "facilityName": evidence.facility,
+                  "facilityName": evidence.facility.name,
                   "vaccinatedCountry": evidence.facility.address.addressCountry
               };
               vaccinationDetails.push(vaccineDetails);
@@ -596,7 +596,7 @@ function getVaccineDetailsOfPreviousDoses(certificates){
             "name": evidence.vaccine,
             "manufacturer": evidence.manufacturer,
             "batch": evidence.batch,
-            "facilityName": evidence.facility,
+            "facilityName": evidence.facility.name,
             "vaccinatedCountry": evidence.facility.address.addressCountry
         };
         vaccinationDetails.push(vaccineDetails);

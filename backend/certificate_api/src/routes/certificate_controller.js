@@ -558,7 +558,7 @@ function getVaccineDetails(certificateData, certificateRaw,) {
         }
     }
 }
-function getVaccineDetailsOfPreviousDoses(certificates){
+function getVaccineDetailsOfPreviousDoses(certificates) {
     let evidence;
     if (certificates.length > 0) {
       let vaccineDetails;
@@ -602,7 +602,7 @@ function getVaccineDetailsOfPreviousDoses(certificates){
         vaccinationDetails.push(vaccineDetails);
       return vaccinationDetails;
     }
-  }
+}
 function prepareDataForVaccineCertificateTemplate(certificateRaw, dataURL) {
     certificateRaw.certificate = JSON.parse(certificateRaw.certificate);
     const {certificate: {credentialSubject,issuer,issuanceDate, evidence}} = certificateRaw;

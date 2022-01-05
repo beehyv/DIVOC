@@ -5,7 +5,7 @@ const {
   CERTIFICATE_BASE_URL,
   CERTIFICATE_FEEDBACK_BASE_URL,
   CERTIFICATE_INFO_BASE_URL,
-  ENABLE_FEEDBACK_URL
+  ENABLE_FEEDBACK_URL, CERTIFICATE_DID
 } = require ("./config/config");
 const {Kafka} = require('kafkajs');
 const fs = require('fs');
@@ -116,6 +116,32 @@ documentLoader[CERTIFICATE_NAMESPACE_V2] = vaccinationContextV2;
   })
 })();
 
+function populateIdentity(cert) {
+  let isURI = false;
+  let identity = R.pathOr('', ['recipient', 'name'], cert);
+  isURI = isURIFormat(identity);
+
+  return isURI ? identity : `${CERTIFICATE_DID}:${cert.preEnrollmentCode}`;
+}
+
+function isURIFormat(param) {
+  let parsed;
+  let isURI;
+  try {
+    parsed = new URL(param);
+    isURI = true;
+  } catch (e) {
+    console.error("Identity field must be of URI format");
+    isURI = false;
+  }
+
+  if (!parsed.protocol) {
+    console.error("Identity field must be of URI format");
+    isURI = false;
+  }
+  return isURI;
+}
+
 function ageOfRecipient(recipient) {
   if (recipient.age) return recipient.age;
   if (recipient.dob && new Date(recipient.dob).getFullYear() > 1900)
@@ -141,7 +167,7 @@ function transformW3(cert, certificateId) {
   const namespace = certificateType === CERTIFICATE_TYPE_V3 ? CERTIFICATE_NAMESPACE_V2 : CERTIFICATE_NAMESPACE;
   const recipientIdentifier = R.pathOr('', ['recipient', 'identity'], cert);
   const preEnrollmentCode = R.pathOr('', ['preEnrollmentCode'], cert);
-  const recipientName = R.pathOr('', ['recipient', 'name'], cert);
+  const recipientName = populateIdentity(cert);
   const recipientGender = R.pathOr('', ['recipient', 'gender'], cert);
   const recipientNationality = R.pathOr('', ['recipient', 'nationality'], cert);
   const recipientAge = ageOfRecipient(cert.recipient); //from dob

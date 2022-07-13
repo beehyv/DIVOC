@@ -1,0 +1,218 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: VC issuance
+  description: Digital infra for verifiable credentials
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /v1/issuer/invite/{issuerName}:
+    post:
+      tags:
+        - issuerInvite
+      summary: Invite a new issuer
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      operationId: issuerInvite
+      parameters:
+        - name: issuerName
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/InviteIssuerRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IssuerInviteSuccess'
+        '400':
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/Error'
+  /v1/schema:
+    post:
+      tags:
+        - schema
+      summary: Add a new schema
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      operationId: schemaV1
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/AddSchemaRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SchemaSuccess'
+        '400':
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/Error'
+  /v1/certify/{entityType}:
+    post:
+      tags:
+        - certification
+      summary: Certify event of given entityType
+      operationId: certifyVC
+      parameters:
+        - name: entityType
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CertificationSuccess'
+        '400':
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/Error'
+  /v1/templates/{issuerName}:
+    post:
+      tags:
+        - uploadIssuerTemplate
+      summary: Upload templates specific to an issuer
+      operationId: templateUpload
+      parameters:
+        - name: issuerName
+          in: path
+          required: true
+          type: string
+        - name: file
+          in: formData
+          description: file to upload
+          required: true
+          type: file
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UploadSuccess'
+        '400':
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  AddSchemaRequest:
+    type: object
+    properties:
+      name:
+        type: string
+        minLength: 1
+      schema:
+        type: object
+    required:
+      - name
+      - schema
+  SchemaSuccess:
+    type: object
+    properties:
+      msgId:
+        type: string
+      status:
+        type: string
+      schemaOSId:
+        type: string
+  IssuerInviteSuccess:
+    type: object
+    properties:
+      msgId:
+        type: string
+      status:
+        type: string
+      issuerOSId:
+        type: string
+  UploadSuccess:
+    type: object
+    properties:
+      documentLocations:
+        type: array
+        items:
+          type: string
+      errors:
+        type: array
+        items:
+          type: string
+      status:
+        type: string
+      issuerOSId:
+        type: string
+  CertificationSuccess:
+    type: object
+    properties:
+      msgId:
+        type: string
+      status:
+        type: string
+      certificateOSId:
+        type: string
+  InviteIssuerRequest:
+    type: object
+    properties:
+      contactDetails:
+        type: object
+        properties:
+          name:
+            type: string
+          email:
+            type: string
+          mobile:
+            type: string
+      schemas:
+        type: array
+        items:
+          type: string
+      accountDetails:
+        type: object
+        properties:
+          userId:
+            type: string
+        required:
+          - userId
+      websiteUrl:
+        type: string
+      logoUrl:
+        type: string
+      name:
+        type: string
+      sectorType:
+        type: string
+    required:
+      - accountDetails
+      - name
+  Error:
+    type: object
+    properties:
+      code:
+        type: string
+      msgId:
+        type: string
+      message:
+        type: string
+    required:
+      - code
+      - message
+host: divoc.xiv.in
+schemes:
+  - https
+basePath: /divoc/vc-certify/api
